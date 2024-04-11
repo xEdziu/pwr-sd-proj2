@@ -10,16 +10,21 @@
 template<typename T>
 class ArrayPriorityQueue : public PriorityQueue<T> {
 
+private:
+    Element<T>* elements;
+    size_t numElements;
+    size_t capacity;
+
 public:
 
     /*
         * Default constructor
-        * Initializes the arrays' capacity and size with default capacity (100)
+        * Initializes the arrays' capacity and size with default capacity (1000)
         * @param none
         * @return none
     */
     ArrayPriorityQueue() {
-        elements = new Element<T>[100];
+        elements = new Element<T>[1000];
         numElements = 0;
         capacity = 100;
     }
@@ -47,7 +52,7 @@ public:
         if (!file) {
             throw std::string("File not found");
         }
-        capacity = 100; // domyślna pojemność
+        capacity = 1000; // default capacity
         elements = new Element<T>[capacity];
         numElements = 0;
         T value;
@@ -187,10 +192,5 @@ public:
     size_t size() {
         return numElements;
     }
-
-private:
-    Element<T>* elements;
-    size_t numElements;
-    size_t capacity;
 };
 #endif
