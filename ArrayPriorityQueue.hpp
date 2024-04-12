@@ -50,7 +50,7 @@ public:
     ArrayPriorityQueue(const char* filename) {
         std::ifstream file(filename);
         if (!file) {
-            throw std::string("File not found");
+            std::cerr << "File not found" << __FILE__ << " at line " << __LINE__ << std::endl;
         }
         capacity = 1000; // default capacity
         elements = new Element<T>[capacity];
@@ -84,7 +84,7 @@ public:
     ArrayPriorityQueue(const char* filename, size_t capacity) {
         std::ifstream file(filename);
         if (!file) {
-            throw std::string("File not found");
+            std::cerr << "File not found" << __FILE__ << " at line " << __LINE__ << std::endl;
         }
         this->capacity = capacity;
         elements = new Element<T>[capacity];
@@ -134,7 +134,7 @@ public:
     */
     T extractMax() {
         if (numElements == 0) {
-            throw std::string("Priority Queue is empty");
+            std::cerr << "Priority Queue is empty" << __FILE__ << " at line " << __LINE__ << std::endl;
         }
         int maxIndex = 0;
         for (int i = 1; i < numElements; i++) {
@@ -157,7 +157,7 @@ public:
     */
     T findMax() const {
         if (numElements == 0) {
-            throw std::string("Priority Queue is empty");
+            std::cerr << "Priority Queue is empty" << __FILE__ << " at line " << __LINE__ << std::endl;
         }
         int maxIndex = 0;
         for (int i = 1; i < numElements; i++) {
@@ -181,7 +181,7 @@ public:
                 return;
             }
         }
-        throw std::string("Element not found");
+        std::cerr << "Element not found in file " << __FILE__ << " at line " << __LINE__ << std::endl;
     }
 
     /*
@@ -189,8 +189,33 @@ public:
         * @param none
         * @return number of elements in the priority queue
     */
-    size_t size() {
+    size_t size() override {
         return numElements;
+    }
+
+    /*
+        * Checks if the priority queue has a given value
+        * @param value value to check
+        * @return true if the priority queue has the value, false otherwise
+    */
+    bool hasValue(T value) override {
+        for (int i = 0; i < numElements; i++) {
+            if (elements[i].value == value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+        * Prints the 3 first elements of the priority queue 3
+        * @param none
+        * @return none
+    */
+    void print() {
+        for (int i = 0; i < 3; i++) {
+            std::cout << elements[i].value << " " << elements[i].priority << std::endl;
+        }
     }
 };
 #endif

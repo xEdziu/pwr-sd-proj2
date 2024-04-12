@@ -132,8 +132,8 @@ public:
     HeapPriorityQueue(const char* filename) : capacity(1000), heapSize(0) {
         heapArray = new Element<T>[capacity];
         std::fstream file(filename);
-        if (!file) {
-            throw std::string("File not found");
+        if (!file) {    
+            std::cerr << "File not found" << __FILE__ << " at line " << __LINE__ << std::endl;
         }
         T value;
         int priority;
@@ -154,7 +154,7 @@ public:
         heapArray = new Element<T>[capacity];
         std::fstream file(filename);
         if (!file) {
-            throw std::string("File not found");
+            std::cerr << "File not found" << __FILE__ << " at line " << __LINE__ << std::endl;
         }
         T value;
         int priority;
@@ -197,8 +197,8 @@ public:
     */
     T extractMax() override {
         if (heapSize == 0) {
-            std::cerr << "Error: attempting to extract from an empty heap." << std::endl;
-            return T(); // Zwraca wartość domyślną dla typu T
+            std::cerr << "Error: attempting to extract from an empty heap." << __FILE__ << " at line " << __LINE__ << std::endl;
+            return nullptr; // Zwraca wartość domyślną dla typu T
         }
         T maxValue = heapArray[0].value;
         heapArray[0] = heapArray[heapSize - 1];
@@ -214,7 +214,7 @@ public:
     */
     T findMax() const override {
         if (heapSize == 0) {
-            std::cerr << "Error: heap is empty." << std::endl;
+            std::cerr << "Error: heap is empty." << __FILE__ << " at line " << __LINE__ << std::endl;
             return nullptr;
         }
         return heapArray[0].value;
@@ -239,7 +239,7 @@ public:
                 return;
             }
         }
-        std::cerr << "Error: element not found." << std::endl;
+        std::cerr << "Error: element not found." << __FILE__ << " at line " << __LINE__ << std::endl;
     }
 
     /*
@@ -247,8 +247,33 @@ public:
         * @param none
         * @return number of elements in the heap
     */
-    size_t size() const override {
+    size_t size() override {
         return heapSize;
+    }
+
+    /*
+        * Function to check if the heap has a given value
+        * @param value value to check
+        * @return true if the heap has the value, false otherwise
+    */
+    bool hasValue(T value) override {
+        for (size_t i = 0; i < heapSize; i++) {
+            if (heapArray[i].value == value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+        * Function to print 10 first elements of the heap
+        * @param none
+        * @return none
+    */
+    void print() {
+        for (size_t i = 0; i < 10 && i < heapSize; i++) {
+            std::cout << heapArray[i].value << " " << heapArray[i].priority << std::endl;
+        }
     }
 };
 
