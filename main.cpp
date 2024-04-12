@@ -359,7 +359,6 @@ void testStructures(MENU *main_menu) {
                 std::string tmp = structure->findMax();
                 auto end = std::chrono::high_resolution_clock::now();
                 sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-                savedTimesIterator++;
                 delete structure;
             }
             output << "findMax;ArrayPriorityQueue;" << size << ";" << (sum/1000) << "\n";
@@ -379,7 +378,6 @@ void testStructures(MENU *main_menu) {
                 std::string tmp = structure->findMax();
                 auto end = std::chrono::high_resolution_clock::now();
                 sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-                savedTimesIterator++;
                 delete structure;
             }
             output << "findMax;HeapPriorityQueue;" << size << ";" << (sum/1000) << "\n";

@@ -6,7 +6,7 @@
 
 # How to compile & run
 ## Compile
-- `g++ -o run main.cpp -lncurses -lmenu -std=c++17`
+- `g++ -o run -O0 main.cpp -lncurses -lmenu -std=c++17`
 
 ## Run
 - `./a.out`
