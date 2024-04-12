@@ -235,7 +235,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " modifyKey" << std::endl;
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str());
                 bool found = false;
                 do {
                     std::string value = generateValue();
@@ -258,7 +258,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " modifyKey" << std::endl;
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str());
                 bool found = false;
                 do {
                     std::string value = generateValue();
@@ -285,7 +285,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " insert" << std::endl;
             for (int i = 1; i <= 100; i++) {
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str());
                 sum += performTestInsert(priorityInsert, valueInsert, structure);
                 delete structure;
             }
@@ -301,7 +301,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " insert" << std::endl;
             for (int i = 1; i <= 100; i++) {
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str());
                 sum += performTestInsert(priorityInsert, valueInsert, structure);
                 delete structure;
             }
@@ -317,7 +317,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " extractMax" << std::endl;
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str());
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->extractMax();
                 auto end = std::chrono::high_resolution_clock::now();
@@ -336,7 +336,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " extractMax" << std::endl;
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str());
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->extractMax();
                 auto end = std::chrono::high_resolution_clock::now();
@@ -355,7 +355,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " findMax" << std::endl;
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str());
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->findMax();
                 auto end = std::chrono::high_resolution_clock::now();
@@ -374,7 +374,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " findMax" << std::endl;
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str());
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->findMax();
                 auto end = std::chrono::high_resolution_clock::now();
@@ -393,7 +393,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " size" << std::endl;
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str());
                 auto start = std::chrono::high_resolution_clock::now();
                 size_t tmp = structure->size();
                 auto end = std::chrono::high_resolution_clock::now();
@@ -412,7 +412,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " size" << std::endl;
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str());
                 auto start = std::chrono::high_resolution_clock::now();
                 size_t tmp = structure->size();
                 auto end = std::chrono::high_resolution_clock::now();
