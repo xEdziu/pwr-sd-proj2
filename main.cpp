@@ -2,17 +2,22 @@
 #include <ncurses.h>
 #include <menu.h>
 #include <filesystem>
-#include <cstring>
+#include <cstring>  
 #include <string>
 #include <vector>
-#include <ctime>
+#include <chrono>
 #include <fstream>
+#include "ArrayPriorityQueue.hpp"
+#include "HeapPriorityQueue.hpp"
+
+// Data structures
+ArrayPriorityQueue<std::string>* arrayPriorityQueue;
+HeapPriorityQueue<std::string>* heapPriorityQueue;
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
-// Używamy namespace std::filesystem dla krótszego zapisu
+// We use fs for filesystem
 namespace fs = std::filesystem;
-
 
 std::vector<std::string> txtFilesInDirectory() {
     std::vector<std::string> files;
@@ -41,10 +46,9 @@ void displaySubChoices(const char *choice, MENU* main_menu, Structure* &structur
         "Create Empty Structure",
         "Build from file",
         "insert(e, p) - element e of priority p",
-        "extract-max() - remove and return element of highest priority",
-        "find-max() - return element of highest priority",
-        "peek() - print element of highest priority",
-        "modify-key(e, p) - change priority of element e to p",
+        "extractMax() - remove and return element of highest priority",
+        "findMax() - return element of highest priority",
+        "modifyKey(e, p) - change priority of element e to p",
         "size() - return number of elements",
         "Print",
         "Exit"
@@ -115,7 +119,70 @@ void displaySubChoices(const char *choice, MENU* main_menu, Structure* &structur
                     mvprintw(files.size()+4, 0, "Press any key to return to main menu");
                     leave = true;
                     break;
+                } else if (strcmp(item_name(cur_item), "insert(e, p) - element e of priority p") == 0) {
+                    clear();
+                    echo();
+                    mvprintw(0, 0, "Enter element e: ");
+                    char e_cstr[1000]; // Adjust the size as needed
+                    scanw("%s", e_cstr);
+                    std::string e = e_cstr;
+                    mvprintw(1, 0, "Enter priority p: ");
+                    int p;
+                    scanw("%d", &p);
+                    structure->insert(e, p);
+                    mvprintw(2, 0, "Element inserted");
+                    mvprintw(3, 0, "Press any key to return to main menu");
+                    noecho();
+                    leave = true;
+                    break;
+                } else if (strcmp(item_name(cur_item), "extractMax() - remove and return element of highest priority") == 0) {
+                    clear();
+                    mvprintw(0, 0, "Extracted element: %s", structure->extractMax().c_str());
+                    mvprintw(1, 0, "Press any key to return to main menu");
+                    leave = true;
+                    break;
+                } else if (strcmp(item_name(cur_item), "findMax() - return element of highest priority") == 0) {
+                    clear();
+                    mvprintw(0, 0, "Element of highest priority: %s", structure->findMax().c_str());
+                    mvprintw(1, 0, "Press any key to return to main menu");
+                    leave = true;
+                    break;
+                } else if (strcmp(item_name(cur_item), "modifyKey(e, p) - change priority of element e to p") == 0) {
+                    clear();
+                    echo();
+                    mvprintw(0, 0, "Enter element e: ");
+                    char e_cstr[1000]; // Adjust the size as needed
+                    scanw("%s", e_cstr);
+                    std::string e = e_cstr;
+                    mvprintw(1, 0, "Enter new priority p: ");
+                    int p;
+                    scanw("%d", &p);
+                    structure->modifyKey(e, p);
+                    mvprintw(2, 0, "Element priority modified");
+                    mvprintw(3, 0, "Press any key to return to main menu");
+                    noecho();
+                    leave = true;
+                    break;
+                } else if (strcmp(item_name(cur_item), "size() - return number of elements") == 0) {
+                    clear();
+                    mvprintw(0, 0, "Number of elements: %zu", structure->size());
+                    mvprintw(1, 0, "Press any key to return to main menu");
+                    leave = true;
+                    break;
+                } else if (strcmp(item_name(cur_item), "Print") == 0) {
+                    clear();
+                    mvprintw(0, 0, "Printing 10 first elements of structure...");
+                    for (int i = 3; i < 13; i++) {
+                        structure->print();
+                    }
+                    mvprintw(1, 0, "Press any key to return to main menu");
+                    leave = true;
+                    break;
+                } else if (strcmp(item_name(cur_item), "Exit") == 0) {
+                    leave = true;
+                    break;
                 }
+
                     
             case 27: /* ESC */
                 leave = true;
@@ -140,86 +207,271 @@ void displaySubChoices(const char *choice, MENU* main_menu, Structure* &structur
     refresh();  // Odświeżenie ekranu
 }
 
-template<typename Structure, typename T>
-void testOperation(Structure* &structure, const std::string& operationType, T operationArgument,int removeOperationArgument,
- int findOperationArgument, int iteration, int size,  std::ofstream& output, std::string structureName) {
-    clock_t start, end;
-    if (operationType == "addAtStart") {
-        start = clock();
-        structure->addAtStart(operationArgument);
-        end = clock();
-    } else if (operationType == "addAtEnd") {
-        start = clock();
-        structure->addAtEnd(operationArgument);
-        end = clock();
-    } else if (operationType == "addAtRandom") {
-        start = clock();
-        structure->addAtRandom(operationArgument);
-        end = clock();
-    } else if (operationType == "removeAtStart") {
-        start = clock();
-        structure->removeAtStart();
-        end = clock();
-    } else if (operationType == "removeAtEnd") {
-        start = clock();
-        structure->removeAtEnd();
-        end = clock();
-    } else if (operationType == "removeAtRandom") {
-        start = clock();
-        structure->removeAt(removeOperationArgument);
-        end = clock();
-    } else if (operationType == "find") {
-        start = clock();
-        structure->find(findOperationArgument);
-        end = clock();
-    }
-
-    std::string iterationS = std::to_string(iteration);
-    
-    double time = ((double)(end - start) / CLOCKS_PER_SEC) * 1000.0;
-    output << iterationS << ";" << structureName << ";" << size << ";" << operationType << ";" << time << "\n";
+template<typename Structure>
+long long performTestModifyKey(int priority, std::string value, Structure* &structure){
+    auto start = std::chrono::high_resolution_clock::now();
+    structure->modifyKey(value, priority);
+    auto end = std::chrono::high_resolution_clock::now();
+    return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 }
 
 template<typename Structure>
-void performTests(std::ofstream& output, std::string structureName,
-        int size, const std::string& operation, int toAdd,
-        int removeOperationArgument, int findOperationArgument) {
-    for (int i = 1; i <= 10; i++) {
-        std::string fileName = "list_" + std::to_string(size) + ".txt";
-        Structure* structure = new Structure(fileName.c_str());
-        testOperation(structure, operation, toAdd, removeOperationArgument,
-        findOperationArgument, i, size, output, structureName);
-        delete structure;
-        std::cout << "Iteration " << i << " - " << operation << " on structure " << structureName << " - " << size << " elements has ended." << std::endl;
+long long performTestInsert(int priority, std::string value, Structure* &structure){
+    auto start = std::chrono::high_resolution_clock::now();
+    structure->insert(value, priority);
+    auto end = std::chrono::high_resolution_clock::now();
+    return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+}
+
+std::string generateValue() {
+    std::string str = "";
+    for (int j = 0; j < 10; j++) {
+        str += (char)(rand() % 4 + 65);
     }
+    return str;
+}
+
+int generatePriority() {
+    return rand() % 3999999999 + 1;
+}
+
+int avg(long long int* arr, int size) {
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        sum += arr[i];
+    }
+    return sum / size;
 }
 
 void testStructures(MENU *main_menu) {
     endwin();
-    clock_t start, end;
     std::cout << "Performing structures tests..." << std::endl;
     std::ofstream output("results.csv");
-    output << "iteration;type;size;action;timeMs\n";
+    output << "action;type;size;timeUs\n";
     int line = 0;
 
-    std::string operations[] = {"addAtStart", "addAtEnd", "addAtRandom", "removeAtStart", "removeAtEnd", "removeAtRandom", "find"};
+    int dataSets[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int sizes[] = {1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000, 512000};
 
-    start = clock();
+    auto startMain = std::chrono::high_resolution_clock::now();
 
-    for (const std::string& operation : operations) {
-        for (int size : sizes) {
-            int removeOperationArgument = rand() % size + 1;
-            int addOperationArgument = rand() % size + 1;
-            int findOperationArgument = rand() % 10000;
-            performTests<ArrayList<int>>(output, "ArrayList", size, operation, addOperationArgument, removeOperationArgument, findOperationArgument);
-            performTests<SinglyLinkedHeadList<int>>(output, "SinglyLinkedHeadList", size, operation, addOperationArgument, removeOperationArgument, findOperationArgument);
-            performTests<SinglyLinkedHeadTailList<int>>(output, "SinglyLinkedHeadTailList", size, operation, addOperationArgument, removeOperationArgument, findOperationArgument);
-            performTests<DoublyLinkedList<int>>(output, "DoublyLinkedList", size, operation, addOperationArgument, removeOperationArgument, findOperationArgument); 
+    //modifyKey tests for ArrayPriorityQueue
+    int priority = generatePriority();
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " modifyKey" << std::endl;
+            for (int i = 1; i <= 10; i++){
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                bool found = false;
+                do {
+                    std::string value = generateValue();
+                    if (structure->hasValue(value)) {
+                        found = true;
+                        savedTimes[savedTimesIterator] = performTestModifyKey<ArrayPriorityQueue<std::string>>(priority, value, structure);
+                        savedTimesIterator++;
+                    }
+                } while (!found);
+                delete structure;
+            }
+            output << "modifyKey;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
         }
+        delete[] savedTimes;
     }
-       
-    end = clock();
+
+    //modifyKey tests for HeapPriorityQueue
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " modifyKey" << std::endl;
+            for (int i = 1; i <= 10; i++){
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);                bool found = false;
+                do {
+                    std::string value = generateValue();
+                    if (structure->hasValue(value)) {
+                        found = true;
+                        savedTimes[savedTimesIterator] = performTestModifyKey<HeapPriorityQueue<std::string>>(priority, value, structure);
+                        savedTimesIterator++;
+                    }
+                } while (!found);
+                delete structure;
+            }
+            output << "modifyKey;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+        }
+        delete[] savedTimes;
+    }
+
+    
+    std::string valueInsert = generateValue();
+    int priorityInsert = generatePriority();
+
+    //insert tests for ArrayPriorityQueue
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " insert" << std::endl;
+            for (int i = 1; i <= 10; i++) {
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                savedTimes[savedTimesIterator] = performTestInsert(priorityInsert, valueInsert, structure);
+                savedTimesIterator++;
+                delete structure;
+            }
+            output << "insert;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+        }
+        delete[] savedTimes;
+    }
+
+    //insert tests for HeapPriorityQueue
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " insert" << std::endl;
+            for (int i = 1; i <= 10; i++){
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                savedTimes[savedTimesIterator] = performTestInsert(priorityInsert, valueInsert, structure);
+                savedTimesIterator++;
+                delete structure;
+            }
+            output << "insert;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+        }
+        delete[] savedTimes;
+    }
+
+    //extractMax tests for ArrayPriorityQueue
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " extractMax" << std::endl;
+            for (int i = 1; i <= 10; i++){
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                auto start = std::chrono::high_resolution_clock::now();
+                std::string tmp = structure->extractMax();
+                auto end = std::chrono::high_resolution_clock::now();
+                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                savedTimesIterator++;
+                delete structure;
+            }
+            output << "extractMax;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+        }
+        delete[] savedTimes;
+    }
+
+    //extractMax tests for HeapPriorityQueue
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " extractMax" << std::endl;
+            for (int i = 1; i <= 10; i++){
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                auto start = std::chrono::high_resolution_clock::now();
+                std::string tmp = structure->extractMax();
+                auto end = std::chrono::high_resolution_clock::now();
+                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                savedTimesIterator++;
+                delete structure;
+            }
+            output << "extractMax;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+        }
+        delete[] savedTimes;
+    }
+
+    //findMax tests for ArrayPriorityQueue
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " findMax" << std::endl;
+            for (int i = 1; i <= 10; i++){
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                auto start = std::chrono::high_resolution_clock::now();
+                std::string tmp = structure->findMax();
+                auto end = std::chrono::high_resolution_clock::now();
+                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                savedTimesIterator++;
+                delete structure;
+            }
+            output << "findMax;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+        }
+        delete[] savedTimes;
+    }
+
+    //findMax tests for HeapPriorityQueue
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " findMax" << std::endl;
+            for (int i = 1; i <= 10; i++){
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                auto start = std::chrono::high_resolution_clock::now();
+                std::string tmp = structure->findMax();
+                auto end = std::chrono::high_resolution_clock::now();
+                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                savedTimesIterator++;
+                delete structure;
+            }
+            output << "findMax;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+        }
+        delete[] savedTimes;
+    }
+
+    //size tests for ArrayPriorityQueue
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " size" << std::endl;
+            for (int i = 1; i <= 10; i++){
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
+                auto start = std::chrono::high_resolution_clock::now();
+                size_t tmp = structure->size();
+                auto end = std::chrono::high_resolution_clock::now();
+                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                savedTimesIterator++;
+                delete structure;
+            }
+            output << "size;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+        }
+        delete[] savedTimes;
+    }
+
+    //size tests for HeapPriorityQueue
+    for (int size : sizes) {
+        int savedTimesIterator = 0;
+        long long int* savedTimes = new long long int[100];
+        for (int set : dataSets) {
+            std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " size" << std::endl;
+            for (int i = 1; i <= 10; i++){
+                std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                auto start = std::chrono::high_resolution_clock::now();
+                size_t tmp = structure->size();
+                auto end = std::chrono::high_resolution_clock::now();
+                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                savedTimesIterator++;
+                delete structure;
+            }
+            output << "size;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+        }
+        delete[] savedTimes;
+    }
+    
+    auto endMain = std::chrono::high_resolution_clock::now();
 
     output.close();
 
@@ -227,7 +479,7 @@ void testStructures(MENU *main_menu) {
     clear();
 
     mvprintw(line++, 0, "Tests have ended. Results saved to results.csv");
-    mvprintw(line++, 0, "Time elapsed: %f seconds", ((double)(end - start) / CLOCKS_PER_SEC));
+    mvprintw(line++, 0, "Time elapsed: %ld seconds", std::chrono::duration_cast<std::chrono::seconds>(endMain - startMain).count());
     mvprintw(line++, 0, "Press any key to return to main menu");
     refresh();
     getch();
@@ -241,10 +493,8 @@ void testStructures(MENU *main_menu) {
 int main() {
 
     const char *choices[] = {
-        "Array List",
-        "Singly Linked List - Head",
-        "Singly Linked List - Head & Tail",
-        "Doubly Linked List",
+        "Array Priority Queue",
+        "Heap Priority Queue",
         "Perform Structures Tests"
     };
 
@@ -298,14 +548,10 @@ int main() {
                     clear();  // Wyczyszczenie ekranu przed przejściem do sub-menu
                     printIntro();
 
-                    if (strcmp(item_name(cur_item), "Array List") == 0) {
-                        displaySubChoices(item_name(cur_item), my_menu, arrayList);
-                    } else if (strcmp(item_name(cur_item), "Singly Linked List - Head") == 0) {
-                        displaySubChoices(item_name(cur_item), my_menu, singlyLinkedHeadList);
-                    } else if (strcmp(item_name(cur_item), "Singly Linked List - Head & Tail") == 0) {
-                        displaySubChoices(item_name(cur_item), my_menu, singlyLinkedHeadTailList);
-                    } else if (strcmp(item_name(cur_item), "Doubly Linked List") == 0) {
-                        displaySubChoices(item_name(cur_item), my_menu, doublyLinkedList);
+                    if (strcmp(item_name(cur_item), "Array Priority Queue") == 0) {
+                        displaySubChoices(item_name(cur_item), my_menu, arrayPriorityQueue);
+                    } else if (strcmp(item_name(cur_item), "Heap Priority Queue") == 0) {
+                        displaySubChoices(item_name(cur_item), my_menu, heapPriorityQueue);
                     }
 
                     refresh();
