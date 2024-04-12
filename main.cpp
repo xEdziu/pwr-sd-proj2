@@ -44,7 +44,6 @@ template<typename Structure>
 void displaySubChoices(const char *choice, MENU* main_menu, Structure* &structure) {
     const char *subChoices[] = {
         "Create Empty Structure",
-        "Build from file",
         "insert(e, p) - element e of priority p",
         "extractMax() - remove and return element of highest priority",
         "findMax() - return element of highest priority",
@@ -98,25 +97,6 @@ void displaySubChoices(const char *choice, MENU* main_menu, Structure* &structur
                     mvprintw(0, 0, "Press any key to return to main menu");
                     structure = new Structure();
                     mvprintw(1, 0, "Empty structure created");
-                    leave = true;
-                    break;
-                } else if (strcmp(item_name(cur_item), "Build from file") == 0) {
-                    clear();
-                    mvprintw(0, 0, "Build from file");
-                    std::vector<std::string> files = txtFilesInDirectory();
-                    for (int i = 0; i < files.size(); ++i) {
-                        mvprintw(i+1, 0, "%d: %s",i+1, files[i].c_str());
-                    }
-                    //ask for number of file
-                    echo();
-                    mvprintw(files.size()+1, 0, "Enter number of file: ");
-                    int fileNumber;
-                    scanw("%d", &fileNumber);
-                    noecho();
-                    //check which structure is selected
-                    structure = new Structure(files[fileNumber - 1].c_str());
-                    mvprintw(files.size()+3, 0, "Structure built from file");
-                    mvprintw(files.size()+4, 0, "Press any key to return to main menu");
                     leave = true;
                     break;
                 } else if (strcmp(item_name(cur_item), "insert(e, p) - element e of priority p") == 0) {
@@ -235,14 +215,6 @@ int generatePriority() {
     return rand() % 3999999999 + 1;
 }
 
-int avg(long long int* arr, int size) {
-    int sum = 0;
-    for (int i = 0; i < size; i++) {
-        sum += arr[i];
-    }
-    return sum / size;
-}
-
 void testStructures(MENU *main_menu) {
     endwin();
     std::cout << "Performing structures tests..." << std::endl;
@@ -258,11 +230,10 @@ void testStructures(MENU *main_menu) {
     //modifyKey tests for ArrayPriorityQueue
     int priority = generatePriority();
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " modifyKey" << std::endl;
-            for (int i = 1; i <= 10; i++){
+            for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
                 bool found = false;
@@ -270,39 +241,36 @@ void testStructures(MENU *main_menu) {
                     std::string value = generateValue();
                     if (structure->hasValue(value)) {
                         found = true;
-                        savedTimes[savedTimesIterator] = performTestModifyKey<ArrayPriorityQueue<std::string>>(priority, value, structure);
-                        savedTimesIterator++;
+                        sum += performTestModifyKey<ArrayPriorityQueue<std::string>>(priority, value, structure);
                     }
                 } while (!found);
                 delete structure;
             }
-            output << "modifyKey;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "modifyKey;ArrayPriorityQueue;" << size << ";" << (sum/1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
 
     //modifyKey tests for HeapPriorityQueue
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " modifyKey" << std::endl;
-            for (int i = 1; i <= 10; i++){
+            for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);                bool found = false;
                 do {
                     std::string value = generateValue();
                     if (structure->hasValue(value)) {
                         found = true;
-                        savedTimes[savedTimesIterator] = performTestModifyKey<HeapPriorityQueue<std::string>>(priority, value, structure);
-                        savedTimesIterator++;
+                        sum += performTestModifyKey<HeapPriorityQueue<std::string>>(priority, value, structure);
                     }
                 } while (!found);
                 delete structure;
             }
-            output << "modifyKey;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "modifyKey;HeapPriorityQueue;" << size << ";" << (sum/1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
 
     
@@ -311,164 +279,150 @@ void testStructures(MENU *main_menu) {
 
     //insert tests for ArrayPriorityQueue
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " insert" << std::endl;
-            for (int i = 1; i <= 10; i++) {
+            for (int i = 1; i <= 100; i++) {
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
-                savedTimes[savedTimesIterator] = performTestInsert(priorityInsert, valueInsert, structure);
-                savedTimesIterator++;
+                sum += performTestInsert(priorityInsert, valueInsert, structure);
                 delete structure;
             }
-            output << "insert;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "insert;ArrayPriorityQueue;" << size << ";" << (sum / 1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
 
     //insert tests for HeapPriorityQueue
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " insert" << std::endl;
-            for (int i = 1; i <= 10; i++){
+            for (int i = 1; i <= 100; i++) {
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
-                savedTimes[savedTimesIterator] = performTestInsert(priorityInsert, valueInsert, structure);
-                savedTimesIterator++;
+                sum += performTestInsert(priorityInsert, valueInsert, structure);
                 delete structure;
             }
-            output << "insert;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "insert;HeapPriorityQueue;" << size << ";" << (sum / 1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
 
     //extractMax tests for ArrayPriorityQueue
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " extractMax" << std::endl;
-            for (int i = 1; i <= 10; i++){
+            for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->extractMax();
                 auto end = std::chrono::high_resolution_clock::now();
-                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-                savedTimesIterator++;
+                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "extractMax;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "extractMax;ArrayPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
 
     //extractMax tests for HeapPriorityQueue
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " extractMax" << std::endl;
-            for (int i = 1; i <= 10; i++){
+            for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->extractMax();
                 auto end = std::chrono::high_resolution_clock::now();
-                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-                savedTimesIterator++;
+                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "extractMax;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "extractMax;HeapPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
 
     //findMax tests for ArrayPriorityQueue
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " findMax" << std::endl;
-            for (int i = 1; i <= 10; i++){
+            for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->findMax();
                 auto end = std::chrono::high_resolution_clock::now();
-                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 savedTimesIterator++;
                 delete structure;
             }
-            output << "findMax;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "findMax;ArrayPriorityQueue;" << size << ";" << (sum/1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
 
     //findMax tests for HeapPriorityQueue
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " findMax" << std::endl;
-            for (int i = 1; i <= 10; i++){
+            for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->findMax();
                 auto end = std::chrono::high_resolution_clock::now();
-                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 savedTimesIterator++;
                 delete structure;
             }
-            output << "findMax;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "findMax;HeapPriorityQueue;" << size << ";" << (sum/1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
 
     //size tests for ArrayPriorityQueue
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " size" << std::endl;
-            for (int i = 1; i <= 10; i++){
+            for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 ArrayPriorityQueue<std::string>* structure = new ArrayPriorityQueue<std::string>(filename.c_str(), size);
                 auto start = std::chrono::high_resolution_clock::now();
                 size_t tmp = structure->size();
                 auto end = std::chrono::high_resolution_clock::now();
-                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-                savedTimesIterator++;
+                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "size;ArrayPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "size;ArrayPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
 
     //size tests for HeapPriorityQueue
     for (int size : sizes) {
-        int savedTimesIterator = 0;
-        long long int* savedTimes = new long long int[100];
+        int sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " size" << std::endl;
-            for (int i = 1; i <= 10; i++){
+            for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
                 auto start = std::chrono::high_resolution_clock::now();
                 size_t tmp = structure->size();
                 auto end = std::chrono::high_resolution_clock::now();
-                savedTimes[savedTimesIterator] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-                savedTimesIterator++;
+                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "size;HeapPriorityQueue;" << size << ";" << avg(savedTimes, 100) << "\n";
+            output << "size;HeapPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
+            sum = 0;
         }
-        delete[] savedTimes;
     }
     
     auto endMain = std::chrono::high_resolution_clock::now();
