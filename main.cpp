@@ -246,9 +246,9 @@ void testStructures(MENU *main_menu) {
                 } while (!found);
                 delete structure;
             }
-            output << "modifyKey;ArrayPriorityQueue;" << size << ";" << (sum/1000) << "\n";
-            sum = 0;
         }
+        output << "modifyKey;ArrayPriorityQueue;" << size << ";" << (sum/1000) << "\n";
+        sum = 0;
     }
 
     //modifyKey tests for HeapPriorityQueue
@@ -258,7 +258,7 @@ void testStructures(MENU *main_menu) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " modifyKey" << std::endl;
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
-                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);                bool found = false;
+                HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
                 do {
                     std::string value = generateValue();
                     if (structure->hasValue(value)) {
@@ -268,9 +268,9 @@ void testStructures(MENU *main_menu) {
                 } while (!found);
                 delete structure;
             }
-            output << "modifyKey;HeapPriorityQueue;" << size << ";" << (sum/1000) << "\n";
-            sum = 0;
         }
+        output << "modifyKey;HeapPriorityQueue;" << size << ";" << (sum/1000) << "\n";
+        sum = 0;
     }
 
     
@@ -288,9 +288,9 @@ void testStructures(MENU *main_menu) {
                 sum += performTestInsert(priorityInsert, valueInsert, structure);
                 delete structure;
             }
-            output << "insert;ArrayPriorityQueue;" << size << ";" << (sum / 1000) << "\n";
-            sum = 0;
         }
+        output << "insert;ArrayPriorityQueue;" << size << ";" << (sum / 1000) << "\n";
+        sum = 0;
     }
 
     //insert tests for HeapPriorityQueue
@@ -304,9 +304,9 @@ void testStructures(MENU *main_menu) {
                 sum += performTestInsert(priorityInsert, valueInsert, structure);
                 delete structure;
             }
-            output << "insert;HeapPriorityQueue;" << size << ";" << (sum / 1000) << "\n";
-            sum = 0;
         }
+        output << "insert;HeapPriorityQueue;" << size << ";" << (sum / 1000) << "\n";
+        sum = 0;
     }
 
     //extractMax tests for ArrayPriorityQueue
@@ -323,9 +323,9 @@ void testStructures(MENU *main_menu) {
                 sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "extractMax;ArrayPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
-            sum = 0;
         }
+        output << "extractMax;ArrayPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
+        sum = 0;
     }
 
     //extractMax tests for HeapPriorityQueue
@@ -342,9 +342,9 @@ void testStructures(MENU *main_menu) {
                 sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "extractMax;HeapPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
-            sum = 0;
         }
+        output << "extractMax;HeapPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
+        sum = 0;
     }
 
     //findMax tests for ArrayPriorityQueue
@@ -361,9 +361,9 @@ void testStructures(MENU *main_menu) {
                 sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "findMax;ArrayPriorityQueue;" << size << ";" << (sum/1000) << "\n";
-            sum = 0;
         }
+        output << "findMax;ArrayPriorityQueue;" << size << ";" << (sum/1000) << "\n";
+        sum = 0;
     }
 
     //findMax tests for HeapPriorityQueue
@@ -380,9 +380,9 @@ void testStructures(MENU *main_menu) {
                 sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "findMax;HeapPriorityQueue;" << size << ";" << (sum/1000) << "\n";
-            sum = 0;
         }
+        output << "findMax;HeapPriorityQueue;" << size << ";" << (sum/1000) << "\n";
+        sum = 0;
     }
 
     //size tests for ArrayPriorityQueue
@@ -399,9 +399,9 @@ void testStructures(MENU *main_menu) {
                 sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "size;ArrayPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
-            sum = 0;
         }
+        output << "size;ArrayPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
+        sum = 0;
     }
 
     //size tests for HeapPriorityQueue
@@ -418,9 +418,9 @@ void testStructures(MENU *main_menu) {
                 sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                 delete structure;
             }
-            output << "size;HeapPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
-            sum = 0;
         }
+        output << "size;HeapPriorityQueue;" << size << ";" << (sum/ 1000) << "\n";
+        sum = 0;
     }
     
     auto endMain = std::chrono::high_resolution_clock::now();
