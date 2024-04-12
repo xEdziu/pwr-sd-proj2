@@ -259,6 +259,7 @@ void testStructures(MENU *main_menu) {
             for (int i = 1; i <= 100; i++){
                 std::string filename = "zbior_" + std::to_string(set) + "_" + std::to_string(size) + ".txt";
                 HeapPriorityQueue<std::string>* structure = new HeapPriorityQueue<std::string>(filename.c_str(), size);
+                bool found = false;
                 do {
                     std::string value = generateValue();
                     if (structure->hasValue(value)) {
