@@ -9,7 +9,7 @@
 - `g++ -o run -O0 main.cpp -lncurses -lmenu -std=c++17`
 
 ## Run
-- `./a.out`
+- `./run`
 
 # Machine
 
