@@ -104,11 +104,11 @@ public:
 
     /*
         * Constructor
-        * Initializes the heap with a capacity of 1000
+        * Initializes the heap with a capacity of 1
         * @param none
         * @return none
     */
-    HeapPriorityQueue() : capacity(1000), heapSize(0) {
+    HeapPriorityQueue() : capacity(1), heapSize(0) {
         heapArray = new Element<T>[capacity];
     }
 
@@ -129,7 +129,7 @@ public:
         * @param capacity capacity of the heap
         * @return none
     */
-    HeapPriorityQueue(const char* filename) : capacity(1000), heapSize(0) {
+    HeapPriorityQueue(const char* filename) : capacity(1), heapSize(0) {
         heapArray = new Element<T>[capacity];
         std::fstream file(filename);
         if (!file) {    
