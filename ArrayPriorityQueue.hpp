@@ -24,9 +24,9 @@ public:
         * @return none
     */
     ArrayPriorityQueue() {
-        elements = new Element<T>[1000];
+        elements = new Element<T>[1];
         numElements = 0;
-        capacity = 100;
+        capacity = 1;
     }
 
     /*
@@ -52,7 +52,7 @@ public:
         if (!file) {
             std::cerr << "File not found" << __FILE__ << " at line " << __LINE__ << std::endl;
         }
-        capacity = 1000; // default capacity
+        capacity = 1; // default capacity
         elements = new Element<T>[capacity];
         numElements = 0;
         T value;

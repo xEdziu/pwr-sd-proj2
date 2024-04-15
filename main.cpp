@@ -192,7 +192,7 @@ long long performTestModifyKey(int priority, std::string value, Structure* &stru
     auto start = std::chrono::high_resolution_clock::now();
     structure->modifyKey(value, priority);
     auto end = std::chrono::high_resolution_clock::now();
-    return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 }
 
 template<typename Structure>
@@ -200,7 +200,7 @@ long long performTestInsert(int priority, std::string value, Structure* &structu
     auto start = std::chrono::high_resolution_clock::now();
     structure->insert(value, priority);
     auto end = std::chrono::high_resolution_clock::now();
-    return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 }
 
 std::string generateValue() {
@@ -219,7 +219,7 @@ void testStructures(MENU *main_menu) {
     endwin();
     std::cout << "Performing structures tests..." << std::endl;
     std::ofstream output("results.csv");
-    output << "action;type;size;timeUs\n";
+    output << "action;type;size;timeNs\n";
     int line = 0;
 
     int dataSets[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -321,7 +321,7 @@ void testStructures(MENU *main_menu) {
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->extractMax();
                 auto end = std::chrono::high_resolution_clock::now();
-                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                sum += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
                 delete structure;
             }
         }
@@ -340,7 +340,7 @@ void testStructures(MENU *main_menu) {
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->extractMax();
                 auto end = std::chrono::high_resolution_clock::now();
-                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                sum += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
                 delete structure;
             }
         }
@@ -359,7 +359,7 @@ void testStructures(MENU *main_menu) {
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->findMax();
                 auto end = std::chrono::high_resolution_clock::now();
-                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                sum += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
                 delete structure;
             }
         }
@@ -378,7 +378,7 @@ void testStructures(MENU *main_menu) {
                 auto start = std::chrono::high_resolution_clock::now();
                 std::string tmp = structure->findMax();
                 auto end = std::chrono::high_resolution_clock::now();
-                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                sum += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
                 delete structure;
             }
         }
@@ -397,7 +397,7 @@ void testStructures(MENU *main_menu) {
                 auto start = std::chrono::high_resolution_clock::now();
                 size_t tmp = structure->size();
                 auto end = std::chrono::high_resolution_clock::now();
-                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                sum += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
                 delete structure;
             }
         }
@@ -416,7 +416,7 @@ void testStructures(MENU *main_menu) {
                 auto start = std::chrono::high_resolution_clock::now();
                 size_t tmp = structure->size();
                 auto end = std::chrono::high_resolution_clock::now();
-                sum += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                sum += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
                 delete structure;
             }
         }
