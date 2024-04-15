@@ -188,7 +188,7 @@ void displaySubChoices(const char *choice, MENU* main_menu, Structure* &structur
 }
 
 template<typename Structure>
-long long performTestModifyKey(int priority, std::string value, Structure* &structure){
+uint64_t performTestModifyKey(int priority, std::string value, Structure* &structure){
     auto start = std::chrono::high_resolution_clock::now();
     structure->modifyKey(value, priority);
     auto end = std::chrono::high_resolution_clock::now();
@@ -196,7 +196,7 @@ long long performTestModifyKey(int priority, std::string value, Structure* &stru
 }
 
 template<typename Structure>
-long long performTestInsert(int priority, std::string value, Structure* &structure){
+uint64_t performTestInsert(int priority, std::string value, Structure* &structure){
     auto start = std::chrono::high_resolution_clock::now();
     structure->insert(value, priority);
     auto end = std::chrono::high_resolution_clock::now();
@@ -230,7 +230,7 @@ void testStructures(MENU *main_menu) {
     //modifyKey tests for ArrayPriorityQueue
     int priority = generatePriority();
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " modifyKey" << std::endl;
             for (int i = 1; i <= 100; i++){
@@ -253,7 +253,7 @@ void testStructures(MENU *main_menu) {
 
     //modifyKey tests for HeapPriorityQueue
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " modifyKey" << std::endl;
             for (int i = 1; i <= 100; i++){
@@ -280,7 +280,7 @@ void testStructures(MENU *main_menu) {
 
     //insert tests for ArrayPriorityQueue
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " insert" << std::endl;
             for (int i = 1; i <= 100; i++) {
@@ -296,7 +296,7 @@ void testStructures(MENU *main_menu) {
 
     //insert tests for HeapPriorityQueue
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " insert" << std::endl;
             for (int i = 1; i <= 100; i++) {
@@ -312,7 +312,7 @@ void testStructures(MENU *main_menu) {
 
     //extractMax tests for ArrayPriorityQueue
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " extractMax" << std::endl;
             for (int i = 1; i <= 100; i++){
@@ -331,7 +331,7 @@ void testStructures(MENU *main_menu) {
 
     //extractMax tests for HeapPriorityQueue
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " extractMax" << std::endl;
             for (int i = 1; i <= 100; i++){
@@ -350,7 +350,7 @@ void testStructures(MENU *main_menu) {
 
     //findMax tests for ArrayPriorityQueue
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " findMax" << std::endl;
             for (int i = 1; i <= 100; i++){
@@ -369,7 +369,7 @@ void testStructures(MENU *main_menu) {
 
     //findMax tests for HeapPriorityQueue
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " findMax" << std::endl;
             for (int i = 1; i <= 100; i++){
@@ -388,7 +388,7 @@ void testStructures(MENU *main_menu) {
 
     //size tests for ArrayPriorityQueue
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " ArrayPriorityQueue" << " size" << std::endl;
             for (int i = 1; i <= 100; i++){
@@ -407,7 +407,7 @@ void testStructures(MENU *main_menu) {
 
     //size tests for HeapPriorityQueue
     for (int size : sizes) {
-        int sum = 0;
+        uint64_t sum = 0;
         for (int set : dataSets) {
             std::cout << "Set: " << set << " Size: " << size << " HeapPriorityQueue" << " size" << std::endl;
             for (int i = 1; i <= 100; i++){
