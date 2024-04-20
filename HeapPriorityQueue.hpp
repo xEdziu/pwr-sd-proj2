@@ -52,11 +52,11 @@ private:
         size_t rightChild = right(index);
         size_t largest = index;
 
-        if (leftChild < heapSize && heapArray[leftChild].priority > heapArray[index].priority) {
+        if (leftChild < heapSize && heapArray[leftChild].priority >= heapArray[index].priority) {
             largest = leftChild;
         }
 
-        if (rightChild < heapSize && heapArray[rightChild].priority > heapArray[largest].priority) {
+        if (rightChild < heapSize && heapArray[rightChild].priority >= heapArray[largest].priority) {
             largest = rightChild;
         }
 
